@@ -1,5 +1,4 @@
 
-
 import java.util.*;
 
 
@@ -9,9 +8,9 @@ public class Game
     private int side_length = square_length*square_length;
     private int current_sub_square = 0;
     private int board[][];
-    private Map<Integer,ArrayList<Integer>> sub_squares = new HashMap<>();
-    private Map<Integer,ArrayList<Integer>> rows = new HashMap<>();
-    private Map<Integer,ArrayList<Integer>> columns = new HashMap<>();
+    private Map<Integer, ArrayList<Integer>> sub_squares = new HashMap<>();
+    private Map<Integer, ArrayList<Integer>> rows = new HashMap<>();
+    private Map<Integer, ArrayList<Integer>> columns = new HashMap<>();
     private Map<Integer, HashMap<Integer, ArrayList<Integer>>> temp_sub_squares = new HashMap<>();
     private Map<Integer, ArrayList<Integer>> temp_columns = new HashMap<>();
     private boolean num_found = false;
@@ -20,6 +19,11 @@ public class Game
     private int entries = 0;
     
     
+    public Game()
+    {
+
+    }
+    
     public Game(int square_length)
     {
     	this.square_length = square_length;
@@ -27,11 +31,11 @@ public class Game
     }
     
     
-    public void game_setup() 
+    public void gameSetup() 
     {
-    	game_setup_restart();
+    	gameSetupRestart();
 
-	    while(entries < side_length*side_length)
+	    while(entries<side_length*side_length)
 	    {
 
 	    	for(int row_num=0; row_num<side_length; row_num++)
@@ -41,7 +45,7 @@ public class Game
 	    			current_sub_square = (row_num/square_length)*square_length + col_num/square_length;
 	    			num_found = false;
 	    			
-	    			while(num_found == false)
+	    			while(num_found==false)
 	    			{
 	    				ArrayList<Integer> temp = new ArrayList<>(sub_squares.get(current_sub_square));
 			    		temp.retainAll(rows.get(row_num));
@@ -49,10 +53,10 @@ public class Game
 			    		
 			    		if(temp.isEmpty())
 			    		{
-			    			sub_squares = sub_square_reset(sub_squares, current_sub_square, row_num);
-			    			rows = row_reset(rows, row_num);
-			    			columns = col_reset(columns, col_num);
-			    			board_reset(board, row_num);
+			    			sub_squares = subSquareReset(sub_squares, current_sub_square, row_num);
+			    			rows = rowReset(rows, row_num);
+			    			columns = colReset(columns, col_num);
+			    			boardReset(board, row_num);
 			    			col_num = 0;
 			    			current_sub_square = (row_num/square_length)*square_length + col_num/square_length;
 			    			iterations++;
@@ -91,20 +95,20 @@ public class Game
 	    		
 	    		if(restart)
 	    		{
-	    			game_setup_restart();
+	    			gameSetupRestart();
 	    			break;
 	    		}
 	    	}
 	    }
 	    
-		if(!board_checker(board, side_length, square_length))
+		if(!boardChecker(board, side_length, square_length))
 		{
-		    game_setup();
+		    gameSetup();
 		}
 
     }
     
-    public void game_setup_restart()
+    public void gameSetupRestart()
 	{
 		entries = 0;
 		iterations = 0;
@@ -139,7 +143,7 @@ public class Game
 	    }
 	}
 	
-	private Map<Integer, ArrayList<Integer>> sub_square_reset(Map<Integer, ArrayList<Integer>> m, int sub_square, int row_num)
+	private Map<Integer, ArrayList<Integer>> subSquareReset(Map<Integer, ArrayList<Integer>> m, int sub_square, int row_num)
     {
 		int num_to_clear = sub_square%square_length;
 		int sub_row = row_num%square_length;
@@ -154,7 +158,7 @@ public class Game
 		return m;
     }
 	
-	private Map<Integer, ArrayList<Integer>> row_reset(Map<Integer, ArrayList<Integer>> m, int row_num)
+	private Map<Integer, ArrayList<Integer>> rowReset(Map<Integer, ArrayList<Integer>> m, int row_num)
     {
 		m.get(row_num).clear();
 
@@ -166,7 +170,7 @@ public class Game
 		return m;
     }
 	
-	private Map<Integer, ArrayList<Integer>> col_reset(Map<Integer, ArrayList<Integer>> m, int col_num)
+	private Map<Integer, ArrayList<Integer>> colReset(Map<Integer, ArrayList<Integer>> m, int col_num)
     {
 		for(int i=0; i<col_num; i++)
     	{
@@ -177,10 +181,9 @@ public class Game
 			temp_columns.get(i).clear();
     	}
 		return m;
-		
     }
 	
-	public void board_reset(int wrong_board[][], int row_num)
+	public void boardReset(int wrong_board[][], int row_num)
     {
 		for(int k=0; k<side_length; k++)
     	{
@@ -188,23 +191,7 @@ public class Game
     	}
     }
 	
-	public void current_board(int row_num)
-	{
-		for(int i=0; i<row_num; i++)
-		{
-			for(int j=0; j<side_length; j++)
-			{
-				board[i][j] = board[i][j] + 1;
-    			System.out.print(board[i][j] + " ");
-			}
-			System.out.println("");
-		}
-		System.out.println("");
-		System.out.println(board.length);
-	}
-	
-	
-	private boolean board_checker(int board[][], int side_length, int square_length)
+	private boolean boardChecker(int board[][], int side_length, int square_length)
 	{
 		
 		for(int i=0; i<side_length; i++)
@@ -213,11 +200,10 @@ public class Game
 			{
 				for(int k=j+1; k<side_length; k++)
 				{
-					if(board[i][j] == board[i][k] || board[j][i] == board[k][i])
+					if(board[i][j]==board[i][k] || board[j][i]==board[k][i])
 					{
 						return false;
 					}
-					
 				}
 			}
 		}
@@ -240,7 +226,7 @@ public class Game
 				for(int j=col; j<(col+square_length); j++)
 				{
 					entries+=1;
-					if(values.get(board[i][j]).size() == 0)
+					if(values.get(board[i][j]).size()==0)
 						values.get(board[i][j]).add(1);
 					else
 					{
@@ -255,7 +241,7 @@ public class Game
 			}
 			
 			modifier++;
-			if(modifier%square_length == 0)
+			if(modifier%square_length==0)
 			{
 				col = 0;
 				row+=square_length;
@@ -269,4 +255,30 @@ public class Game
 		return true;
 	}
 	
+	public int[][] returnBoard()
+	{
+		for(int i=0; i<side_length; i++)
+		{
+			for(int j=0; j<side_length; j++)
+			{
+				board[i][j] = board[i][j] + 1;
+			}
+		}
+	
+		return board;
+	}
+	
+	public void printBoard()
+	{
+		for(int i=0; i<side_length; i++)
+		{
+			for(int j=0; j<side_length; j++)
+			{
+				board[i][j] = board[i][j] + 1;
+    			System.out.print(board[i][j] + " ");
+			}
+			System.out.println("");
+		}
+		System.out.println("");
+	}
 }
