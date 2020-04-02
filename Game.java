@@ -105,6 +105,16 @@ public class Game
 		{
 		    gameSetup();
 		}
+		else		//adding 1 in each entry of the board so they go from 1-side_length instead of 0-(side_length-1)
+		{
+			for(int i=0; i<side_length; i++)
+			{
+				for(int j=0; j<side_length; j++)
+				{
+					board[i][j] = board[i][j] + 1;
+				}
+			}
+		}
 
     }
     
@@ -191,7 +201,7 @@ public class Game
     	}
     }
 	
-	private boolean boardChecker(int board[][], int side_length, int square_length)
+	public boolean boardChecker(int board[][], int side_length, int square_length)
 	{
 		
 		for(int i=0; i<side_length; i++)
@@ -226,6 +236,7 @@ public class Game
 				for(int j=col; j<(col+square_length); j++)
 				{
 					entries+=1;
+					
 					if(values.get(board[i][j]).size()==0)
 						values.get(board[i][j]).add(1);
 					else
@@ -241,6 +252,7 @@ public class Game
 			}
 			
 			modifier++;
+			
 			if(modifier%square_length==0)
 			{
 				col = 0;
@@ -257,14 +269,6 @@ public class Game
 	
 	public int[][] returnBoard()
 	{
-		for(int i=0; i<side_length; i++)
-		{
-			for(int j=0; j<side_length; j++)
-			{
-				board[i][j] = board[i][j] + 1;
-			}
-		}
-	
 		return board;
 	}
 	
@@ -274,7 +278,6 @@ public class Game
 		{
 			for(int j=0; j<side_length; j++)
 			{
-				board[i][j] = board[i][j] + 1;
     			System.out.print(board[i][j] + " ");
 			}
 			System.out.println("");

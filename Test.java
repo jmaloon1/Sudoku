@@ -16,17 +16,19 @@ public class Test
 		   
 		   Game g = new Game(square_length);
 		   g.gameSetup();
-		   //g.printBoard();
+		   g.printBoard();
 		   int[][] filled_board = g.returnBoard();
 
-		   
+		   //int[][] game_board = {{1,2,3,4,5,6,7,8,0}, {0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,9}};
 		   GameBoard gb = new GameBoard(filled_board, square_length, 'e');
 		   int[][] game_board = gb.makeGame();
-		   //gb.printBoard();
+		   System.out.println("Game Board");
+		   gb.printBoard();
 		   
 		   AI ai = new AI(game_board, square_length);
-		   ai.playGame();
-		   //ai.printBoard();
+		   ai.playGame(game_board);
+		   System.out.println("Game over");
+		   ai.printBoard();
 		   
 		   for(int row=0; row<side_length; row++)
 		   {
@@ -42,7 +44,7 @@ public class Test
 		   
 	   }
 	   
-	   System.out.println(wins/10000.0);
+	   System.out.println(wins);
 	   
 	}
 }

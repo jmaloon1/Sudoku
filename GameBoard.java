@@ -27,9 +27,24 @@ public class GameBoard {
 		 
 	}
 	
+	public void initiateBoard()
+	{
+		game_board = new int[side_length][side_length];
+		
+		for (int i=0; i<side_length; i++)
+	    {
+		    for (int j=0; j<side_length; j++)
+		    {
+		    	game_board[i][j] = 0;
+		    }
+	    }
+	}
+	
 	
 	public int[][] makeGame()
 	{
+		initiateBoard();
+		
 		int total;
 		int fill = 30;
 		
@@ -51,6 +66,21 @@ public class GameBoard {
 		}
 		
 		ambiguityFinder();  //for ambiguous squares, making it unambiguous
+		
+		System.out.println("new board");
+		printBoard();
+		
+		int [][] test_game_board = new int[side_length][];
+		for(int i=0; i<side_length; i++)
+		    test_game_board[i] = game_board[i].clone();
+		
+		
+		AI ai = new AI(test_game_board, square_length);
+		
+		if(!ai.playGame(test_game_board))
+		{	
+			makeGame();
+		}
 		
 		return game_board;
 	}
@@ -80,8 +110,7 @@ public class GameBoard {
 					{
 						if(row+num<side_length && game_board[row+num][col]==0 && current_sub_square==((row+num)/square_length)*square_length + col/square_length) 
 						{
-							
-							for(int j=col+1; j<side_length-1; j++) 
+							for(int j=col+1; j<side_length; j++) 
 							{
 								
 								if(game_board[row][j]==0 && game_board[row+num][j]==0)
@@ -105,10 +134,8 @@ public class GameBoard {
 						
 						if(col+num<side_length && game_board[row][col+num]==0 && current_sub_square==(row/square_length)*square_length + (col+num)/square_length) 
 						{
-							
-							for(int j=row+1; j<side_length-1; j++) 
+							for(int j=row+1; j<side_length; j++) 
 							{
-								
 								if(game_board[j][col]==0 && game_board[j][col+num]==0)
 								{
 									if(filled_board[row][col]==filled_board[j][col+num] && filled_board[row][col+num]==filled_board[j][col])
@@ -129,28 +156,9 @@ public class GameBoard {
 						}
 					}
 					
-					if(square_length>2 && row%square_length==0)
-					{
-						boolean empty_side = true;
-						
-						for(int num=1; num<square_length; num++)
-						{
-							if(game_board[row+num][col]!=0)
-							{
-								empty_side = false;
-							}
-						}
-						
-						if(empty_side)
-						{
-							
-							
-						}
-					}
 				}
 			}
 		}
-		
 	}
 	
 	public void printBoard()
@@ -165,7 +173,5 @@ public class GameBoard {
 		}
 		System.out.println("");
 	}
-	
-	
 	
 }
