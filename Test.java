@@ -1,4 +1,7 @@
 
+/**
+ * This class tests the game
+*/
 public class Test 
 {
 	public static void main(String[] args) 
@@ -9,10 +12,9 @@ public class Test
 	   int wins = 0;
 	   
 	   
-	   for(int i=0; i<10000; i++)
+	   for(int i=0; i<1000; i++)
 	   {
 		   boolean won_game = true;
-		   
 		   
 		   Game g = new Game(square_length);
 		   g.gameSetup();
@@ -26,7 +28,7 @@ public class Test
 		   gb.printBoard();
 		   
 		   AI ai = new AI(game_board, square_length);
-		   ai.playGame(game_board);
+		   ai.playGame(game_board, true);
 		   System.out.println("Game over");
 		   ai.printBoard();
 		   
@@ -41,10 +43,8 @@ public class Test
 		   
 		   if(won_game)
 			   wins++;
-		   
 	   }
 	   
 	   System.out.println(wins);
-	   
 	}
 }

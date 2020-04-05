@@ -1,7 +1,9 @@
 
 import java.util.*;
 
-
+/**
+ * This class creates a filled in sudoku board given the length of the desired sub_square (length=3 for a standard sudoku board).
+*/
 public class Game 
 {
 	private int square_length = 3;
@@ -18,55 +20,61 @@ public class Game
     private int iterations = 0;
     private int entries = 0;
     
+    /**
+     * This constructor is empty and is needed for the child classes of this class
+    */
+    public Game(){}
     
-    public Game()
-    {
-
-    }
-    
+    /**
+     * This constructor initializes the square_length and side_length variables given a passed along square length
+     * @param square_length: int that represents the length of a sub_square (3 is standard)
+    */
     public Game(int square_length)
     {
     	this.square_length = square_length;
     	this.side_length = square_length*square_length;
     }
     
-    
+    /**
+     * This method attempts to create a filled out board adhering to the rules of sudoku and if it fails, it retries until success
+     * @param none
+     * @return void
+    */
     public void gameSetup() 
     {
-    	gameSetupRestart();
+    	gameSetupRestart();	//calling method that reinitializes an empty game board
 
-	    while(entries<side_length*side_length)
+	    while(entries<side_length*side_length)	//attempt to fill in each square while not all squares filled in
 	    {
-
 	    	for(int row_num=0; row_num<side_length; row_num++)
 	    	{
 	    		for(int col_num=0; col_num<side_length; col_num++)
 		    	{
-	    			current_sub_square = (row_num/square_length)*square_length + col_num/square_length;
+	    			current_sub_square = (row_num/square_length)*square_length + col_num/square_length;	 //subsquare for each entry. Starts at 0 in top left, moves from left to right, top to bottom
 	    			num_found = false;
 	    			
-	    			while(num_found==false)
+	    			while(num_found==false)  //iterates until a legal number is found
 	    			{
 	    				ArrayList<Integer> temp = new ArrayList<>(sub_squares.get(current_sub_square));
 			    		temp.retainAll(rows.get(row_num));
 			    		temp.retainAll(columns.get(col_num));
 			    		
-			    		if(temp.isEmpty())
+			    		if(temp.isEmpty())  //if an iteration fails for trying to fill a number in, the whole row is made blank and the process for that row restarts
 			    		{
 			    			sub_squares = subSquareReset(sub_squares, current_sub_square, row_num);
 			    			rows = rowReset(rows, row_num);
-			    			columns = colReset(columns, col_num);
+			    			columns = columnReset(columns, col_num);
 			    			boardReset(board, row_num);
 			    			col_num = 0;
 			    			current_sub_square = (row_num/square_length)*square_length + col_num/square_length;
 			    			iterations++;
-			    			if(iterations>side_length*side_length)
+			    			if(iterations>side_length*side_length)  //setting value of restart to true if no legal moves found after many iterations, the game board will be emptied completely
 			    			{
 			    				restart = true;
 			    				break;
 			    			}
 			    		}
-			    		else
+			    		else  //if leagal moves are found, a random legal move is put into a square
 			    		{
 				    		Random rand = new Random();
 				    		int seed = rand.nextInt(temp.size());
@@ -83,17 +91,17 @@ public class Game
 			    		}
 	    			} 
 	    			
-	    			if(restart) {
+	    			if(restart) {  //breaking from inner for loop if restart=true
 	    				break;
 	    			}
 		    	}
 	    		
-	    		for(int m=0; m<side_length; m++)
+	    		for(int m=0; m<side_length; m++) 	//clearing entries of hashmap that were used in process
 	    		{
 	    			temp_columns.get(m).clear();
 	    		}
 	    		
-	    		if(restart)
+	    		if(restart)		//if restart=true, clearing partially filled game board, process will restart
 	    		{
 	    			gameSetupRestart();
 	    			break;
@@ -101,7 +109,7 @@ public class Game
 	    	}
 	    }
 	    
-		if(!boardChecker(board, side_length, square_length))
+		if(!boardChecker(board))  //if board doesn't adhere to rules, calling current method to restart process 
 		{
 		    gameSetup();
 		}
@@ -115,17 +123,21 @@ public class Game
 				}
 			}
 		}
-
     }
     
-    public void gameSetupRestart()
+    /**
+     * This method clears the game board of all its entries and clears variables that may have been altered if previous attempts were made at creating game
+     * @param none
+     * @return void
+    */
+    private void gameSetupRestart()
 	{
 		entries = 0;
 		iterations = 0;
 		restart = false;
 		board = new int[side_length][side_length];
 
-	    for (int i=0; i<side_length; i++)
+	    for(int i=0; i<side_length; i++)  //reinitializing various variables
 	    {
 	    	sub_squares.put(i, new ArrayList<>());
 	    	rows.put(i, new ArrayList<>());
@@ -134,7 +146,7 @@ public class Game
 	    	temp_columns.put(i, new ArrayList<>());
 	    }
 	    
-	    for (int j=0; j<side_length; j++)
+	    for(int j=0; j<side_length; j++) 	//reinitializing various variables
 	    {
 	    	for(int k=0; k<side_length; k++)
 	    	{
@@ -153,6 +165,13 @@ public class Game
 	    }
 	}
 	
+    /**
+     * This method resets a hashmap that holds allowable values of entries in a given subsquare
+     * @param m: hashmap that holds legal values of elements in a given subsquare
+     * @param sub_square: int representing number of a given subsquare
+     * @param row: int representing number of a given row
+     * @return Map<Integer, ArrayList<Integer>>: reinitialized hashmap
+    */
 	private Map<Integer, ArrayList<Integer>> subSquareReset(Map<Integer, ArrayList<Integer>> m, int sub_square, int row_num)
     {
 		int num_to_clear = sub_square%square_length;
@@ -168,6 +187,12 @@ public class Game
 		return m;
     }
 	
+	/**
+     * This method resets a hashmap that holds allowable values of entries in a given row
+     * @param m: hashmap that holds legal values of elements in a given row
+     * @param row: int representing number of a given row
+     * @return Map<Integer, ArrayList<Integer>>: reinitialized hashmap
+    */
 	private Map<Integer, ArrayList<Integer>> rowReset(Map<Integer, ArrayList<Integer>> m, int row_num)
     {
 		m.get(row_num).clear();
@@ -180,7 +205,13 @@ public class Game
 		return m;
     }
 	
-	private Map<Integer, ArrayList<Integer>> colReset(Map<Integer, ArrayList<Integer>> m, int col_num)
+	/**
+     * This method resets a hashmap that holds allowable values of entries in a given column
+     * @param m: hashmap that holds legal values of elements in a given column
+     * @param row: int representing number of a given column
+     * @return Map<Integer, ArrayList<Integer>>: reinitialized hashmap
+    */
+	private Map<Integer, ArrayList<Integer>> columnReset(Map<Integer, ArrayList<Integer>> m, int col_num)
     {
 		for(int i=0; i<col_num; i++)
     	{
@@ -193,15 +224,25 @@ public class Game
 		return m;
     }
 	
-	public void boardReset(int wrong_board[][], int row_num)
+	/**
+     * This method resets a row on the game board
+     * @param board: int[][] representing game board
+     * @return row_num: number of row to be reset
+    */
+	public void boardReset(int board[][], int row_num)
     {
 		for(int k=0; k<side_length; k++)
     	{
-    		wrong_board[row_num][k] = 0;
+    		board[row_num][k] = 0;
     	}
     }
 	
-	public boolean boardChecker(int board[][], int side_length, int square_length)
+	/**
+     * This method checks if a given game board adheres to rules of sudoku
+     * @param board: int[][] representing game board
+     * @return boolean: true if game board is legal, false otherwise
+    */
+	public boolean boardChecker(int board[][])
 	{
 		
 		for(int i=0; i<side_length; i++)
@@ -267,11 +308,21 @@ public class Game
 		return true;
 	}
 	
+	/**
+     * This method returns a given game board
+     * @param none
+     * @return board: int[][] representing game board
+    */
 	public int[][] returnBoard()
 	{
 		return board;
 	}
 	
+	/**
+     * This method print the game board
+     * @param none
+     * @return void
+    */
 	public void printBoard()
 	{
 		for(int i=0; i<side_length; i++)

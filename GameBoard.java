@@ -1,5 +1,9 @@
+
 import java.util.*;
 
+/**
+ * This class creates a partially filled game board based on a completed game board that adheres to the rules of sudoku
+*/
 public class GameBoard {
 	
 	private int filled_board[][];
@@ -8,25 +12,25 @@ public class GameBoard {
 	private int side_length = square_length*square_length;
 	private char difficulty;
 	
+	/**
+     * This constructor initializes an empty game board
+     * @param filled_board: int[][] of filled in game board
+     * @param square_length: int that represents the length of a sub_square (3 is standard)
+     * @param difficulty: string representing how difficult to make puzzle
+    */
 	public GameBoard(int filled_board[][], int square_length, char difficulty)
 	{
 		this.filled_board = filled_board;
 		this.square_length = square_length;
 		this.side_length = square_length*square_length;
 		this.difficulty = difficulty;
-		
-		game_board = new int[side_length][side_length];
-		
-		 for (int i=0; i<side_length; i++)
-		    {
-			    for (int j=0; j<side_length; j++)
-			    {
-			    	game_board[i][j] = 0;
-			    }
-		    }
-		 
 	}
 	
+	/**
+     * This method initiates an empty game board
+     * @param none
+     * @return void
+    */
 	public void initiateBoard()
 	{
 		game_board = new int[side_length][side_length];
@@ -40,51 +44,55 @@ public class GameBoard {
 	    }
 	}
 	
-	
+	/**
+     * This method creates a game by filling in squares of the empty game board to the subsequent values of the filled board with a certain 
+     * probability (lower probability if difficulty is set to hard ('h')). AI class is invoked to make sure game only has one solution
+     * @param none
+     * @return board: int[][] representing game board
+    */
 	public int[][] makeGame()
 	{
-		initiateBoard();
+		initiateBoard();	//initiating empty game board
 		
-		int total;
-		int fill = 30;
+		double threshold;	//threshold for random number. If random number is less than this value, number will be filled in
 		
-		if(difficulty=='h')		//if difficulty level is set to 'h' for hard, fill in squares with low probability (with odds fill/total or 30/100)
-			total = 100;
-		else					//if difficulty level is not  set to 'h' for hard, fill in squares with high probability (with odds fill/total or 30/70)
-			total = 70;
+		if(difficulty=='h')		//if difficulty level is set to 'h' for hard, fill in squares with low probability
+			threshold = (square_length-1.0)/square_length - (1.0/(square_length + 1.0));
+		else					//if difficulty level is not  set to 'h' for hard, fill in squares with high probability
+			threshold = (square_length-1.0)/square_length - (1/(square_length + 2.0));
 		
-		for(int row=0; row<side_length; row++)  //filling in each individual square with probability fill/total
+		for(int row=0; row<side_length; row++)  
 		{
 			for(int col=0; col<side_length; col++)
 			{
 				Random rand = new Random();
-				int x = rand.nextInt(total);		//creating random number between 0 and total
+				double x = rand.nextDouble();		//creating random number between 0 and 1
 				
-				if(x<fill)    //if random number is less than fill, fill in square
+				if(x>threshold)    //if random number is less than fill, fill in square
 					game_board[row][col] = filled_board[row][col];
 			}
 		}
 		
-		ambiguityFinder();  //for ambiguous squares, making it unambiguous
-		
-		System.out.println("new board");
-		printBoard();
+		ambiguityFinder();  //for simple ambiguous squares, making it unambiguous
 		
 		int [][] test_game_board = new int[side_length][];
 		for(int i=0; i<side_length; i++)
 		    test_game_board[i] = game_board[i].clone();
 		
 		
-		AI ai = new AI(test_game_board, square_length);
+		AI ai = new AI(test_game_board, square_length);	  //calling ai function to see if game board is unambiguous
 		
-		if(!ai.playGame(test_game_board))
-		{	
+		if(!ai.playGame(test_game_board, false))  //if game board is ambiguous, retry making game board
 			makeGame();
-		}
 		
 		return game_board;
 	}
 	
+	/**
+     * This method finds simple ambiguities in a filled board and makes sure that the partially filled game board won't have these ambiguities
+     * @param none
+     * @return void
+    */
 	public void ambiguityFinder() 
 	{
 		Random rand = new Random();
@@ -94,9 +102,7 @@ public class GameBoard {
 		for(int m=1; m<square_length; m++)   //adding values to arr
 		{
 			arr[m-1] = m;
-			
 		}
-		
 		
 		for(int row=0; row<side_length-1; row++)  //filling in each individual square with probability fill/total
 		{
@@ -161,6 +167,11 @@ public class GameBoard {
 		}
 	}
 	
+	/**
+     * This method print the game board
+     * @param none
+     * @return void
+    */
 	public void printBoard()
 	{
 		for(int i=0; i<side_length; i++)
@@ -173,5 +184,4 @@ public class GameBoard {
 		}
 		System.out.println("");
 	}
-	
 }
