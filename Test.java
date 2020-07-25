@@ -12,7 +12,7 @@ public class Test
 	   int wins = 0;
 	   
 	   
-	   for(int i=0; i<1000; i++)
+	   for(int i=0; i<1; i++)
 	   {
 		   boolean won_game = true;
 		   
@@ -28,7 +28,7 @@ public class Test
 		   gb.printBoard();
 		   
 		   AI ai = new AI(game_board, square_length);
-		   ai.playGame(game_board, true);
+		   ai.playGame(game_board, false);
 		   System.out.println("Game over");
 		   ai.printBoard();
 		   

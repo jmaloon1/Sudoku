@@ -68,8 +68,10 @@ public class GameBoard {
 				Random rand = new Random();
 				double x = rand.nextDouble();		//creating random number between 0 and 1
 				
-				if(x>threshold)    //if random number is less than fill, fill in square
+				if(x<threshold) {    //if random number is less than fill, fill in square
 					game_board[row][col] = filled_board[row][col];
+					System.out.println(threshold);
+				}
 			}
 		}
 		
@@ -80,9 +82,20 @@ public class GameBoard {
 		    test_game_board[i] = game_board[i].clone();
 		
 		
+		System.out.println("Game board!~");
+		for(int i=0; i<side_length; i++)
+		{
+			for(int j=0; j<side_length; j++)
+			{
+    			System.out.print(test_game_board[i][j] + " ");
+			}
+			System.out.println("");
+		}
+		System.out.println("");
+		
 		AI ai = new AI(test_game_board, square_length);	  //calling ai function to see if game board is unambiguous
 		
-		if(!ai.playGame(test_game_board, false))  //if game board is ambiguous, retry making game board
+		if(!ai.playGame(test_game_board, true))  //if game board is ambiguous, retry making game board
 			makeGame();
 		
 		return game_board;
@@ -114,11 +127,10 @@ public class GameBoard {
 				{
 					for(int num: arr)
 					{
-						if(row+num<side_length && game_board[row+num][col]==0 && current_sub_square==((row+num)/square_length)*square_length + col/square_length) 
+						if((row+num)<side_length && game_board[row+num][col]==0 && current_sub_square==((row+num)/square_length)*square_length + col/square_length) 
 						{
 							for(int j=col+1; j<side_length; j++) 
 							{
-								
 								if(game_board[row][j]==0 && game_board[row+num][j]==0)
 								{
 									if(filled_board[row][col]==filled_board[row+num][j] && filled_board[row+num][col]==filled_board[row][j])

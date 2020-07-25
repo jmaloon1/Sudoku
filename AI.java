@@ -91,9 +91,9 @@ public class AI extends Game{
      * @param moves: hashmap representing legal moves left for each given square. Format = (int row : int col: ArrayList legal moves left)
      * @return boolean: true if any moves are made, false otherwise
     */
-	public boolean onlyLeft(int board[][], Map<Integer, HashMap<Integer, ArrayList<Integer>>> moves)
+	public boolean onlyLeft(int board[][], Map<Integer, HashMap<Integer, ArrayList<Integer>>> moves, boolean verifying)
 	{
-		boolean move_made = false;
+		boolean success = false;
 		
 		for(int i=0; i<side_length; i++)
 		{
@@ -102,12 +102,17 @@ public class AI extends Game{
 				if(board[i][j]==0 && moves.get(i).get(j).size()==1)    //checking if the size of remaining moves possible for a given square is 1
 				{
 					board[i][j] = moves.get(i).get(j).get(0);
-					move_made = true;
+					moves.get(i).get(j).clear();
+					
+					if(verifying)
+						return true;
+					else
+						success = true;
 				}
 			}
 		}
 
-		return move_made;
+		return success;
 	}
 	
 	/**
@@ -115,7 +120,26 @@ public class AI extends Game{
      * @param moves: hashmap representing legal moves left for each given square. Format = (int row : int col: ArrayList legal moves left)
      * @return boolean: true if any moves are made, false otherwise
     */
-	public boolean checkRow(Map<Integer, HashMap<Integer, ArrayList<Integer>>> moves)
+	public boolean errorChecker(int board[][], int num)
+	{
+		for(int row=0; row<side_length; row++)
+		{
+			for(int col=0; col<side_length; col++)
+			{
+				return false;
+			}
+		}
+			
+		return true;
+	
+	}
+	
+	/**
+     * This method looks at a given row and plays a move if a certain number can only go in one square in that row
+     * @param moves: hashmap representing legal moves left for each given square. Format = (int row : int col: ArrayList legal moves left)
+     * @return boolean: true if any moves are made, false otherwise
+    */
+	public boolean checkRow(int board[][], Map<Integer, HashMap<Integer, ArrayList<Integer>>> moves, boolean verifying)
 	{
 		Map<Integer, Integer> num_left = new HashMap<>();	//hashmap with each number in a row as key and number of places it can go in the row as the value
 		boolean success = false;
@@ -131,7 +155,7 @@ public class AI extends Game{
 			{
 				for(int num=1; num<=side_length; num++)
 				{
-					if(game_board[row][col]==0 && moves.get(row).get(col).contains((Object) num))  //adding one to each element of the hashmap if that element can go in given square
+					if(board[row][col]==0 && moves.get(row).get(col).contains((Object) num))  //adding one to each element of the hashmap if that element can go in given square
 					{
 						int val = num_left.get(num);
 						num_left.put(num, ++val);
@@ -145,10 +169,15 @@ public class AI extends Game{
 				{
 					for(int c=0; c<side_length; c++)
 					{
-						if(game_board[row][c]==0 && moves.get(row).get(c).contains(j))
+						if(board[row][c]==0 && moves.get(row).get(c).contains(j))
 						{
-							game_board[row][c] = j;
-							success = true;
+							board[row][c] = j;
+							moves.get(row).get(c).clear();
+							
+							if(verifying)
+								return true;
+							else
+								success = true;
 						}
 					}
 				}
@@ -163,7 +192,7 @@ public class AI extends Game{
      * @param moves: hashmap representing legal moves left for each given square. Format = (int row : int col: ArrayList legal moves left)
      * @return boolean: true if any moves are made, false otherwise
     */
-	public boolean checkColumn(Map<Integer, HashMap<Integer, ArrayList<Integer>>> moves)
+	public boolean checkColumn(int[][] board, Map<Integer, HashMap<Integer, ArrayList<Integer>>> moves, boolean verifying)
 	{
 		Map<Integer, Integer> num_left = new HashMap<>();    //hashmap with each number in a column as key and number of places it can go in the column as the value
 		boolean success = false;
@@ -179,7 +208,7 @@ public class AI extends Game{
 			{
 				for(int num=1; num<=side_length; num++)
 				{
-					if(game_board[row][col]==0 && moves.get(row).get(col).contains((Object) num))   //adding one to each element of the hashmap if that element can go in given square
+					if(board[row][col]==0 && moves.get(row).get(col).contains((Object) num))   //adding one to each element of the hashmap if that element can go in given square
 					{
 						int val = num_left.get(num);
 						num_left.put(num, ++val);
@@ -194,10 +223,15 @@ public class AI extends Game{
 				{
 					for(int r=0; r<side_length; r++)
 					{
-						if(game_board[r][col]==0 && moves.get(r).get(col).contains(j))
+						if(board[r][col]==0 && moves.get(r).get(col).contains(j))
 						{
-							game_board[r][col] = j;
-							success = true;
+							board[r][col] = j;
+							moves.get(r).get(col).clear();
+							
+							if(verifying)
+								return true;
+							else
+								success = true;
 						}
 							
 					}
@@ -213,7 +247,7 @@ public class AI extends Game{
      * @param moves: hashmap representing legal moves left for each given square. Format = (int row : int col: ArrayList legal moves left)
      * @return boolean: true if any moves are made, false otherwise
     */
-	public boolean checkSubSquare(Map<Integer, HashMap<Integer, ArrayList<Integer>>> moves)
+	public boolean checkSubSquare(int[][] board, Map<Integer, HashMap<Integer, ArrayList<Integer>>> moves, boolean verifying)
 	{
 		Map<Integer, HashMap<Integer, Integer>> num_left = new HashMap<>();	  //hashmap with each num in a subsquare as key and num of places it can go in the subsquare as value
 		boolean success = false;
@@ -236,7 +270,7 @@ public class AI extends Game{
 				
 				for(int num=1; num<=side_length; num++)
 				{
-					if(game_board[row][col]==0 && moves.get(row).get(col).contains((Object) num))   //adding one to each element of the hashmap if that element can go in given square
+					if(board[row][col]==0 && moves.get(row).get(col).contains((Object) num))   //adding one to each element of the hashmap if that element can go in given square
 					{
 						int val = num_left.get(current_sub_square).get(num);
 						num_left.get(current_sub_square).put(num, ++val);
@@ -257,10 +291,15 @@ public class AI extends Game{
 						{
 							int current_sub_square = (r/square_length)*square_length + c/square_length;
 							
-							if(game_board[r][c]==0 && current_sub_square==ss && moves.get(r).get(c).contains(j))
+							if(board[r][c]==0 && current_sub_square==ss && moves.get(r).get(c).contains(j))
 							{
-								game_board[r][c] = j;
-								success = true;
+								board[r][c] = j;
+								moves.get(r).get(c).clear();
+								
+								if(verifying)
+									return true;
+								else
+									success = true;
 							}
 						}
 					}
@@ -274,33 +313,32 @@ public class AI extends Game{
 	/**
      * This method iterates through other methods that update logic of game and make moves 
      * @param board: int[][] representing game board at its current unfilled state
-     * @param moves: hashmap representing legal moves left for each given square. Format = (int row : int col: ArrayList legal moves left)
      * @return boolean: true if any moves are made, false otherwise
     */
-	public boolean makeMoves(int board[][], Map<Integer, HashMap<Integer, ArrayList<Integer>>> moves)
+	public boolean makeMoves(int board[][], Map<Integer, HashMap<Integer, ArrayList<Integer>>> moves, boolean verifying)
 	{
 		boolean success = false;
-		removeValues(game_board, legal_moves);
+		removeValues(board, moves);
 		
-		if(checkRow(legal_moves))
+		if(checkRow(board, moves, verifying))
 		{
-			removeValues(game_board, legal_moves);
+			removeValues(board, moves);
 			success = true;
 		}
 		
-		if(checkColumn(legal_moves))
+		if(checkColumn(board, moves, verifying))
 		{
-			removeValues(game_board, legal_moves);
+			removeValues(board, moves);
 			success = true;
 		}
 				
-		if(checkSubSquare(legal_moves))
+		if(checkSubSquare(board, moves, verifying))
 		{
-			removeValues(game_board, legal_moves);
+			removeValues(board, moves);
 			success = true;
 		}
 
-		if(!onlyLeft(game_board, legal_moves) && !success)
+		if(!onlyLeft(board, moves, verifying) && !success)
 			return false;
 		
 		return true;
@@ -315,6 +353,7 @@ public class AI extends Game{
 	public boolean tryMove(int board[][], boolean verifying)
 	{
 		boolean success = false;
+		boolean completed_board = false;
 		
 		for(int row=0; row<side_length; row++)
 		{
@@ -326,18 +365,63 @@ public class AI extends Game{
 					
 					for(Object num: legal_moves.get(row).get(col))		//"playing" a possible move for a given square
 					{
-						legal_copy = copyMap(legal_moves);		//creating a deep copy of legal moves map		
-						int[][] temp_board = board.clone();		//creating a deep copy of the game board
+						legal_copy = copyMap(legal_moves);		//creating a deep copy of legal moves map
 						
+						int[][] temp_board = new int[side_length][side_length];   //creating a deep copy of the game board
+						
+						for(int i=0; i<side_length; i++)
+						{
+							for(int j=0; j<side_length; j++)
+							{
+				    			temp_board[i][j] = board[i][j];
+							}
+						}
+
 						temp_board[row][col] = (int) num;		//trying a given move
+						System.out.println("Tryingggggggggg");
+						System.out.println("row " + row);
+						System.out.println("col " + col);
+						System.out.println("num " + num);
+						for(int i=0; i<side_length; i++)
+						{
+							for(int j=0; j<side_length; j++)
+							{
+				    			System.out.print(temp_board[i][j] + " ");
+							}
+							System.out.println("");
+						}
+						System.out.println("");
 						
-						while(makeMoves(temp_board, legal_copy))	//simulating rest of game based on updated game board
+						while(makeMoves(temp_board, legal_copy, verifying))	//simulating rest of game based on updated game board
 						{
 							if(attemptFailed(temp_board, legal_copy) && verifying)	//if attempt fails, can remove initial guess from hashmap
 							{
+								for(int i=0; i<side_length; i++)
+								{
+									for(int j=0; j<side_length; j++)
+									{
+						    			System.out.print(temp_board[i][j] + " ");
+									}
+									System.out.println("");
+								}
+								System.out.println("");
+								System.out.println(legal_copy);
 								remove_nums.add((int) num);
+								System.out.println("SUUUCCCESSS");
+								System.out.println("row " + row);
+								System.out.println("col " + col);
+								System.out.println("num " + num);
+								
 								success = true;
 							}
+							
+
+							if(verifying && isGameOver(temp_board))  //if game is won with initital guess, simply return the update the real game board to be the this attempt
+								if(!completed_board)  // if verifying game  and first successful attempt
+									completed_board = true;
+								else    // if verifying game and already had successful attempt, return false (ambiguous)
+									return false;
+								
 							
 							if(!verifying && isGameOver(temp_board))  //if game is won with initital guess, simply return the update the real game board to be the this attempt
 								board = temp_board.clone();
@@ -390,6 +474,9 @@ public class AI extends Game{
 			{
 				if(board[i][j]==0 && moves.get(i).get(j).size()==0)
 				{
+					System.out.println("bij " + board[i][j]);
+					System.out.println("i " + i);
+					System.out.println("j " + j);
 					return true;
 				}
 			}
@@ -403,9 +490,9 @@ public class AI extends Game{
      * @param board: int[][] representing game board at its current unfilled state
      * @return boolean: true if game is completed, false otherwise
     */
-	public boolean iterateBoard(int[][] board) 
+	public boolean iterateBoard(int[][] board, boolean verifying) 
 	{
-		while(!isGameOver(board) && makeMoves(board, legal_moves)){} //keep iterating through game_board to make moves until game is complete or no moves made in complete iteration
+		while(!isGameOver(board) && makeMoves(board, legal_moves, verifying)){} //keep iterating through game_board to make moves until game is complete or no moves made in complete iteration
 		
 		if(!isGameOver(game_board))
 			return false;
@@ -424,8 +511,18 @@ public class AI extends Game{
 	{		
 		while(!isGameOver(board))	//iterate through game board while game is not over
 		{			
-			if(!iterateBoard(board))
+			if(!iterateBoard(board, verifying))
 			{	
+				System.out.println("Trying move");
+				for(int i=0; i<side_length; i++)
+				{
+					for(int j=0; j<side_length; j++)
+					{
+		    			System.out.print(board[i][j] + " ");
+					}
+					System.out.println("");
+				}
+				System.out.println("");
 				if(!tryMove(board, verifying))
 					return false;
 			}

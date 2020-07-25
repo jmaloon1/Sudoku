@@ -64,7 +64,7 @@ public class Game
 			    			sub_squares = subSquareReset(sub_squares, current_sub_square, row_num);
 			    			rows = rowReset(rows, row_num);
 			    			columns = columnReset(columns, col_num);
-			    			boardReset(board, row_num);
+			    			boardRowReset(board, row_num);
 			    			col_num = 0;
 			    			current_sub_square = (row_num/square_length)*square_length + col_num/square_length;
 			    			iterations++;
@@ -74,7 +74,7 @@ public class Game
 			    				break;
 			    			}
 			    		}
-			    		else  //if leagal moves are found, a random legal move is put into a square
+			    		else  //if legal moves are found, a random legal move is put into a square
 			    		{
 				    		Random rand = new Random();
 				    		int seed = rand.nextInt(temp.size());
@@ -229,11 +229,11 @@ public class Game
      * @param board: int[][] representing game board
      * @return row_num: number of row to be reset
     */
-	public void boardReset(int board[][], int row_num)
+	public void boardRowReset(int board[][], int row_num)
     {
 		for(int k=0; k<side_length; k++)
     	{
-    		board[row_num][k] = 0;
+    		board[row_num][k] = -1;
     	}
     }
 	
