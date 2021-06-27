@@ -1,35 +1,44 @@
 # Sudoku
 
-<img src="C://Users" align="right"
-     alt="Sold out Stadium" width="180" height="120">
+<img src="README Images/Sudoku Normal.jpg" align="right"
+     alt="Sudoku" width="90" height="120">
      
      
      
-UC Davis has partnered with Google for AggieHacks 2021, a competition focused around the analyzing the impacts of COVID-19. 
-We focused on discerning the impact COVID has had on sports because of fans being limited at games and when sports teams should fully reopen their stadiums based on vaccination rates throughout the country.
-
-## What is in the Repo
-
-* Data Collection Tools
-* Programs Focused on Statistical Analysis
-* Visualizations
+This Repository has code in both Java and Python for creating Soduko puzzles. The Java files just have code for creating the games while the Python File also has a GUI that can be used to play the game.
 
 
 
-## Data Collection Tools
+### Logic Behing Making a Sudoku Puzzle
 
-This Repo is split into 2 main parts - sports attendance and COVID vaccination predictions. 
+For making a sudoku puzzle from scratch, there are a few key steps. First is knowing the rules. A sudoku board is a square board that typically has 9 cells in each dimension. This is further broken down into 9 "subsquares" that each consist of a 3x3 square of cells. The rules for playing are as follows:
 
-### Sports Attendance
-Data was used from https://sports-reference.com. It was obtained in several different ways. For hockey (NHL) and soccer (La Liga and Premier League), data was taken directly from the website and cleaned in excel. For baseball (MLB) and basketball (NBA), two different API's in python were used to gather the relevant data. Both of these API's leverage sports-reference.com, however note that the API for basketball only had average attendance for a given season, so generalizations were made to take the season averages to the individual game level (in our final dataset, for the 2020-2021 NBA season, we manually obtained each game's attendance, so the previous statement only applies to earlier seasons). The process for gathering data on American Football (NFL) was a little more tedious. Another API was used in Python that pulled data from another Github repo. This repo had data on NFL games from 2000-2019 and attendance numbers in 2 different files. These files were then downloaded and subsequently uploaded into a SQL database. The SQL file Hackathon_NFL_Query.sql was then used to join these two tables. For 2020 data (during COVID), the data was manually taken from sports-reference.com and joined in excel with the rest of the american football data. The file Hackathon.ipynb has the code for the different API's and also is where the different sports datasets were eventually combined. The master dataset with all of the data is called sports_data.csv and each individual sport also has its own csv.
+1. Each row must have one and only one 1-n where n is the dimension (9 usually)
+2. Each column must have one and only one 1-n
+3. Each subsquare must have one and only one 1-n
 
-### COVID Vaccination Predictions
-The model used for prediction is ARIMA, based on the out-of-sample performance it turns out to be an average of 92% accuracy score. Depending on the states, the accuracy score of our ARIMA model can go has high as 98.69%. More detailed can be found at Sample-test-preidction.ipynb
-<img width="1017" alt="Screen Shot 2021-04-20 at 11 44 17 AM" src="https://user-images.githubusercontent.com/74214249/115447971-f8d4df00-a1cd-11eb-9276-44b9ba945f61.png">
+So in the case of the following board setup, the pink square must be a 4 since this would satisfy the previous requirements
 
-Data for COVID vaccinations was pulled from https://github.com/owid/covid-19-data/tree/master/public/data/vaccinations. This data was originally sourced from the CDC. State population data was taken from https://www.infoplease.com/us/states/state-population-by-rank.
+<p align="center">
+  <img width="240" align="center" alt="Pink Square is a 4" src="README Images/Sudoku Intro.jpg">
+</p>
 
-## Programs Focused on Statistical Analysis
+Now, the above rules apply to both making and playing a game of sudoku, but there is also one additional rule that only applies to the creation of games: each game must have one and only one solution. So for example, the following game would not be a valid game:
+
+<p align="center">
+  <img width="240" align="center" alt="Ambiguous Puzzle" src="README Images/Sudoku Ambig1.jpg">
+</p>
+
+This is because both of the following solutions would work:
+
+<p align="center">
+     <img width="240" align="center" alt="Solution 1" src="README Images/Sudoku Ambig2.jpg">
+     <img width="240" align="center" alt="Solution 2" src="README Images/Sudoku Ambig2b.jpg">
+</p>
+
+Since these two solutions follow all the rules for playing the game, but violate the additional rule for no ambiguity, this puzzle is not valid. So part of the code ensures a scenario like this would never happen
+
+## Classes in the Coe and what they do
 
 ### Sports Attendance
 The file Hackathon.ipynb (same one where data was collected) is where the statistical tests were done for sports team performance. These statistical tests checked whether teams were fairing worse at their home venues during COVID in part due to the lack of fans. The data was saved in our repo to a file called csvData.csv.
