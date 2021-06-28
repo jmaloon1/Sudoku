@@ -51,7 +51,7 @@ This class creates a partially filled game board that can be played by a human. 
 
 ### Miscellaneous
 
-The last two cells were not made into a class (they probably should have been though) and are used for the GUI. The size of the board can be altered (3 would be standard) and the user can play one of 3 game modes.
+The last two cells were not made into a class (they probably should have been though) and are used for the GUI. This GUI uses a package called pygame. The size of the board can be altered (3 would be standard) and the user can play one of 3 game modes.
 
 <p align="center">
   <img width="240" align="center" alt="Ambiguous Puzzle" src="README Images/Sudoku Modes.jpg">
@@ -62,6 +62,8 @@ The game can be played with pressing the buttons on the screen or those on the k
 <p align="center">
   <img width="240" align="center" alt="Ambiguous Puzzle" src="README Images/Sudoku Result.jpg">
 </p>
+
+Note that there is a pygame (package used for the GUI) related bug where if you exit the game from the pop up window (by pressing the red 'X'), then if you rerun the cell to play again, you cannot resize the window or the screen turns black. The workaround is to terminate the program in Jupyter notebook (by pressing the square 'interupt the kernel' button for example). Doing this will allow for resizing in subsequent runs.
 
 
 ## Next Steps
