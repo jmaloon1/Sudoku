@@ -9,7 +9,7 @@ This Repository has code in both Java and Python for creating Sudoku puzzles. Th
 
 
 
-### Logic Behind Making a Sudoku Puzzle
+## Logic Behind Making a Sudoku Puzzle
 
 For making a sudoku puzzle from scratch, there are a few key steps. First is knowing the rules. A sudoku board is a square board that typically has 9 cells in each dimension. This is further broken down into 9 "subsquares" that each consist of a 3x3 square of cells. The rules for playing are as follows:
 
